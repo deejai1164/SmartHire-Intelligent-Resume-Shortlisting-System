@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-kicker">Automated resume screening</div>
+            <div class="app-title-row">
+                <div class="logo-pill">R</div>
+                <div class="app-title-block">
+                    <h1>Resume Screening Studio</h1>
+                    <p>Upload a candidate resume and compare it instantly against your job requirements.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Screen a new candidate</div>
+                        <div class="panel-subtitle">We’ll extract skills, match them to your role, and compute a smart fit score.</div>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-dot"></span>
+                        Live scoring
+                    </div>
+                </div>
+
+                <form action="/analyze" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="field">
+                            <div class="field-label-row">
+                                <label for="resume">Resume PDF</label>
+                                <span class="field-hint">Max 10 MB · PDF only</span>
+                            </div>
+                            <input type="file" id="resume" name="resume" accept=".pdf" required>
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label-row">
+                                <label for="job_description">Job skills / description</label>
+                                <span class="field-hint">Separate skills with commas. Example: Python, NLP, Flask, REST APIs</span>
+                            </div>
+                            <textarea id="job_description" name="job_description" placeholder="Senior ML Engineer role focusing on Python, NLP, model deployment, cloud, etc." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="primary-actions">
+                        <button type="submit" class="submit-button">
+                            <span>Analyze resume</span>
+                            <span>➜</span>
+                        </button>
+                        <p class="legal-text">
+                            <strong>Private by default.</strong> Files stay on this machine and are used only for this analysis.
+                        </p>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="panel side-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">What you’ll see</div>
+                        <div class="panel-subtitle">A concise breakdown so you can move quickly through your pipeline.</div>
+                    </div>
+                </div>
+
+                <div class="insight-metric">
+                    <span class="insight-metric-label">Example match score</span>
+                    <span class="insight-metric-value">78%</span>
+                </div>
+                <div class="insight-meter-track">
+                    <div class="insight-meter-fill" style="width: 78%;"></div>
+                    <div class="insight-meter-overlay"></div>
+                </div>
+
+                <div class="pill-row">
+                    <span class="pill pill--accent">Top skills surfaced</span>
+                    <span class="pill">Keyword + synonym matching</span>
+                    <span class="pill">Resume skill extraction</span>
+                    <span class="pill">Shortlist suggestion</span>
+                </div>
+
+                <div class="quote-card">
+                    <header>
+                        <div class="quote-badge">Hiring snapshot</div>
+                        <div class="quote-meta">Designed for recruiters, talent partners &amp; hiring managers</div>
+                    </header>
+                    <p>
+                        <strong>Upload → Score → Decide.</strong> Use this screen as a companion while you review resumes,
+                        so you can focus on signal, not scanning for keywords.
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="footer-strip">
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <span>Built with Flask, Sentence-Transformers, Gemini &amp; spaCy.</span>
+            <span>UI tuned for quick, confident decisions.</span>
+        </footer>
+    </div>
+</body>
+</html>

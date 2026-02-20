@@ -1,0 +1,534 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .choice-card {
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.94));
+            border: 2px solid rgba(75, 85, 99, 0.9);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .choice-card:hover {
+            border-color: rgba(56, 189, 248, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.98));
+        }
+        .choice-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .choice-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f9fafb;
+        }
+        .choice-description {
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-kicker">Welcome</div>
+            <div class="app-title-row">
+                <div class="logo-pill">R</div>
+                <div class="app-title-block">
+                    <h1>Resume Screening Studio</h1>
+                    <p>Choose your role to get started with intelligent resume screening.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <section class="panel" style="max-width: 800px; margin: 0 auto;">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Select your role</div>
+                        <div class="panel-subtitle">Choose the option that best describes how you'll use this tool.</div>
+                    </div>
+                </div>
+
+                <div class="choice-grid">
+                    <a href="{{ url_for('hr_upload') }}" class="choice-card">
+                        <div class="choice-icon">👔</div>
+                        <div class="choice-title">HR / Recruiter</div>
+                        <div class="choice-description">
+                            Batch process multiple resumes at once. Get a detailed report with scores, contact information, and sorted rankings for efficient candidate screening.
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('individual_upload') }}" class="choice-card">
+                        <div class="choice-icon">👤</div>
+                        <div class="choice-title">Individual</div>
+                        <div class="choice-description">
+                            Upload your resume and compare it against a job description. Discover what skills you have and what's missing to improve your profile.
+                        </div>
+                    </a>
+                </div>
+
+                <div class="quote-card" style="margin-top: 32px;">
+                    <header>
+                        <div class="quote-badge">How it works</div>
+                        <div class="quote-meta">Powered by AI and semantic matching</div>
+                    </header>
+                    <p>
+                        <strong>Smart Screening:</strong> Our system uses semantic embeddings and keyword matching to evaluate resumes against job descriptions. 
+                        Get instant insights into candidate fit, missing skills, and contact information—all in one comprehensive report.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer-strip">
+            <span>Built with Flask, Sentence-Transformers, Gemini &amp; spaCy.</span>
+            <span>AI-powered resume screening for modern hiring.</span>
+        </footer>
+    </div>
+</body>
+</html>
+
+
+ -->
+
+
+
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening Studio</title>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free) for crisp icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 30% 10%, #1e2a3a, #0b0f17);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e9edf5;
+            line-height: 1.5;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated orbs in background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 60vmax;
+            height: 60vmax;
+            top: -20vmax;
+            right: -10vmax;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 50vmin;
+            height: 50vmin;
+            bottom: 5vh;
+            left: 5vw;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: floatReverse 18s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-5%, 5%) scale(1.1); }
+        }
+
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(8%, -8%) scale(1.2); }
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem;
+            padding: 2rem;
+            background: rgba(18, 25, 40, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .app-kicker {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-title-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .logo-pill {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(145deg, #2a3a5e, #1b2642);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #38bdf8;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(56, 189, 248, 0.3);
+            text-shadow: 0 2px 5px rgba(56, 189, 248, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .logo-pill:hover {
+            transform: scale(1.02);
+        }
+
+        .app-title-block h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+        }
+
+        .app-title-block p {
+            color: #9ca9c2;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .app-body {
+            margin: 2.5rem 0;
+        }
+
+        .panel {
+            background: rgba(10, 15, 28, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 2rem 2rem 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.03), 0 15px 30px -15px #00000080;
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: white;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.3rem;
+        }
+
+        .panel-subtitle {
+            color: #9ca9c2;
+            font-size: 0.95rem;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .choice-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 28px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            box-shadow: 0 15px 35px -15px #000000, inset 0 1px 1px rgba(255,255,255,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            padding: 2px;
+            background: linear-gradient(145deg, #38bdf8, #a855f7);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: transparent;
+            box-shadow: 0 30px 45px -20px #38bdf880, 0 10px 20px -10px #000000cc;
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .choice-card:hover::before {
+            opacity: 1;
+        }
+
+        .choice-icon {
+            font-size: 3.2rem;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(45deg, #38bdf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            filter: drop-shadow(0 4px 10px #38bdf880);
+        }
+
+        .choice-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .choice-description {
+            color: #b3c2d9;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .quote-card {
+            margin-top: 2.5rem;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(20, 30, 45, 0.7));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+        }
+
+        .quote-card header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .quote-badge {
+            background: #1e3a5f;
+            color: #90d4ff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            border: 1px solid #38bdf8;
+            text-transform: uppercase;
+        }
+
+        .quote-meta {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .quote-card p {
+            color: #cfddee;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .quote-card strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .footer-strip {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #7f8ea3;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-strip span:first-child {
+            font-weight: 500;
+            color: #b9c7dd;
+        }
+
+        .footer-strip span:last-child {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .app-shell {
+                margin: 1rem;
+                padding: 1.5rem;
+                border-radius: 28px;
+            }
+            .app-title-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            .app-title-block h1 {
+                font-size: 1.8rem;
+            }
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                padding: 1.5rem;
+            }
+            .footer-strip {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Small touch: custom selection color */
+        ::selection {
+            background: #38bdf8;
+            color: #0b0f17;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-kicker">Welcome</div>
+            <div class="app-title-row">
+                <div class="logo-pill">R</div>
+                <div class="app-title-block">
+                    <h1>Resume Screening Studio</h1>
+                    <p>Choose your role to get started with intelligent resume screening.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <section class="panel" style="max-width: 800px; margin: 0 auto;">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Select your role</div>
+                        <div class="panel-subtitle">Choose the option that best describes how you'll use this tool.</div>
+                    </div>
+                </div>
+
+                <div class="choice-grid">
+                    <a href="{{ url_for('hr_upload') }}" class="choice-card">
+                        <div class="choice-icon"><i class="fas fa-briefcase"></i></div>  <!-- Font Awesome icon, fallback emoji not needed -->
+                        <div class="choice-title">HR / Recruiter</div>
+                        <div class="choice-description">
+                            Batch process multiple resumes at once. Get a detailed report with scores, contact information, and sorted rankings for efficient candidate screening.
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('individual_upload') }}" class="choice-card">
+                        <div class="choice-icon"><i class="fas fa-user"></i></div>
+                        <div class="choice-title">Individual</div>
+                        <div class="choice-description">
+                            Upload your resume and compare it against a job description. Discover what skills you have and what's missing to improve your profile.
+                        </div>
+                    </a>
+                </div>
+
+                <div class="quote-card" style="margin-top: 32px;">
+                    <header>
+                        <div class="quote-badge">How it works</div>
+                        <div class="quote-meta">Powered by AI and semantic matching</div>
+                    </header>
+                    <p>
+                        <strong>Smart Screening:</strong> Our system uses semantic embeddings and keyword matching to evaluate resumes against job descriptions. 
+                        Get instant insights into candidate fit, missing skills, and contact information—all in one comprehensive report.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer-strip">
+            <span>Built with Flask, Sentence-Transformers, Gemini &amp; spaCy.</span>
+            <span>AI-powered resume screening for modern hiring.</span>
+        </footer>
+    </div>
+</body>
+</html>
