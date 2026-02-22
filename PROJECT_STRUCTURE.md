@@ -1,4 +1,4 @@
-# SmartHire - AI Resume Shortlisting System
+# SmartHire - Intelligent Resume Shortlisting System
 
 ## Project Overview
 
@@ -232,3 +232,4 @@ Final Score = (Semantic Score × 0.6) + (Keyword Score × 0.4)
 - Semantic matching may take 1-3 seconds per resume (depending on text length)
 - Gemini API calls require internet connection and API key
 - The system works offline for keyword matching if Gemini is unavailable
+
