@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark evaluation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: radial-gradient(circle at 30% 10%, #1e2a3a, #0b0f17);
+            min-height: 100vh;
+            color: #e9edf5;
+            line-height: 1.5;
+            padding: 2rem 1rem 3rem;
+        }
+        .wrap { max-width: 960px; margin: 0 auto; }
+        a { color: #38bdf8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .sub { color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .panel {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(75, 85, 99, 0.6);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        .metric {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+        .metric label { display: block; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; }
+        .metric .val { font-size: 1.35rem; font-weight: 600; color: #f1f5f9; }
+        .err { color: #f87171; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid rgba(75, 85, 99, 0.4); }
+        th { color: #94a3b8; font-weight: 500; }
+        tr:hover td { background: rgba(30, 41, 59, 0.35); }
+        .ok { color: #4ade80; }
+        .bad { color: #f87171; }
+        code { font-size: 0.8rem; background: rgba(15, 23, 42, 0.9); padding: 0.15rem 0.35rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <p><a href="{{ url_for('dashboard') }}">← Back to dashboard</a></p>
+        <h1>Offline benchmark evaluation</h1>
+        <p class="sub">
+            Uses labeled pairs in <code>evaluation/benchmark_cases.json</code> (no Gemini). Combined score is compared to
+            <code>EVAL_THRESHOLD</code> (default 55) to predict relevant vs not relevant. JSON:
+            <a href="{{ url_for('evaluation_page', format='json') }}">?format=json</a>
+        </p>
+
+        {% if data.get('error') %}
+        <div class="panel err">{{ data.error }}</div>
+        {% else %}
+        <div class="panel">
+            <div class="metrics">
+                <div class="metric">
+                    <label>Accuracy</label>
+                    <div class="val">{{ data.accuracy }}%</div>
+                </div>
+                <div class="metric">
+                    <label>Precision</label>
+                    <div class="val">{{ data.precision }}%</div>
+                </div>
+                <div class="metric">
+                    <label>Recall</label>
+                    <div class="val">{{ data.recall }}%</div>
+                </div>
+                <div class="metric">
+                    <label>F1</label>
+                    <div class="val">{{ data.f1_score }}%</div>
+                </div>
+                <div class="metric">
+                    <label>Threshold</label>
+                    <div class="val">{{ data.threshold }}</div>
+                </div>
+                <div class="metric">
+                    <label>Cases scored</label>
+                    <div class="val">{{ data.cases_scored }} / {{ data.cases_in_file }}</div>
+                </div>
+            </div>
+            {% if data.cases_with_errors %}
+            <p class="err" style="margin-top:1rem;">Cases with errors: {{ data.cases_with_errors }}</p>
+            {% endif %}
+            <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.85rem;">
+                Confusion: TP={{ data.confusion.tp }} FP={{ data.confusion.fp }} TN={{ data.confusion.tn }} FN={{ data.confusion.fn }}
+            </p>
+        </div>
+
+        <div class="panel" style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Combined</th>
+                        <th>Semantic</th>
+                        <th>Keyword</th>
+                        <th>Pred</th>
+                        <th>Truth</th>
+                        <th>OK</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.cases %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        {% if row.error %}
+                        <td colspan="6" class="err">{{ row.error }}</td>
+                        {% else %}
+                        <td>{{ row.combined_score }}</td>
+                        <td>{{ row.semantic_score }}</td>
+                        <td>{{ row.keyword_score }}</td>
+                        <td>{{ 'yes' if row.predicted_relevant else 'no' }}</td>
+                        <td>{{ 'yes' if row.ground_truth_relevant else 'no' }}</td>
+                        <td class="{{ 'ok' if row.correct else 'bad' }}">{{ '✓' if row.correct else '✗' }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

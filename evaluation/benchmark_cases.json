@@ -1,0 +1,65 @@
+{
+  "description": "Synthetic labeled (resume, job description) pairs for offline evaluation. ground_truth_relevant means the candidate is a plausible fit for the role. Edit this file to add your own cases; restart the app or reload /evaluation.",
+  "cases": [
+    {
+      "id": 1,
+      "ground_truth_relevant": true,
+      "job_description": "We are hiring a Backend Software Engineer. Requirements: Python, FastAPI or Flask, REST APIs, PostgreSQL, Docker, and experience with cloud deployments on AWS. You will design scalable services and write clean, tested code.",
+      "resume_text": "Jane Doe — Software Engineer\n\nExperience: Built REST APIs using Python and FastAPI at Acme Corp. Deployed services on AWS with Docker and CI/CD. Managed PostgreSQL schemas and query tuning. Strong focus on testing with pytest.\n\nSkills: Python, FastAPI, Flask, PostgreSQL, Docker, AWS, pytest."
+    },
+    {
+      "id": 2,
+      "ground_truth_relevant": true,
+      "job_description": "Data Scientist role: machine learning, Python, pandas, scikit-learn, model evaluation, and SQL. Experience with experimentation and stakeholder communication.",
+      "resume_text": "Alex Kim — Data Scientist\n\nDeveloped classification models in Python using scikit-learn and pandas. Ran cross-validation and tracked metrics. Queried large datasets in SQL. Presented results to product teams.\n\nPython, pandas, scikit-learn, SQL, Jupyter."
+    },
+    {
+      "id": 3,
+      "ground_truth_relevant": false,
+      "job_description": "Senior Backend Software Engineer: Python microservices, Kubernetes, gRPC, PostgreSQL, observability with Prometheus.",
+      "resume_text": "Maria Lopez — Executive Chef\n\nLed kitchen operations at a fine dining restaurant. Menu design, food costing, staff training, and vendor management. Passionate about seasonal ingredients and plating.\n\nSkills: culinary arts, kitchen management, food safety."
+    },
+    {
+      "id": 4,
+      "ground_truth_relevant": false,
+      "job_description": "Certified Public Accountant: tax preparation, GAAP, audits, QuickBooks, financial reporting for mid-size clients.",
+      "resume_text": "David Chen — Full Stack Developer\n\nBuilt web apps with React and Node.js. Experience with TypeScript, MongoDB, and REST APIs. Contributed to open source and agile teams."
+    },
+    {
+      "id": 5,
+      "ground_truth_relevant": false,
+      "job_description": "Registered Nurse: patient care in ICU, IV administration, EMR documentation, ACLS certification required.",
+      "resume_text": "Sam Patel — DevOps Engineer\n\nMaintained CI/CD pipelines with Jenkins and GitHub Actions. Infrastructure as code with Terraform on AWS. Monitoring with Grafana and Prometheus."
+    },
+    {
+      "id": 6,
+      "ground_truth_relevant": true,
+      "job_description": "DevOps Engineer: Kubernetes, Docker, Terraform, AWS, CI/CD, Linux administration.",
+      "resume_text": "Jordan Lee — DevOps\n\nAutomated deployments with GitLab CI. Managed EKS clusters and Helm charts. Terraform for AWS networking and IAM. Docker images for microservices. Linux shell scripting daily."
+    },
+    {
+      "id": 7,
+      "ground_truth_relevant": false,
+      "job_description": "Digital Marketing Manager: SEO, Google Ads, content strategy, social campaigns, analytics dashboards.",
+      "resume_text": "Chris Taylor — Mobile Developer\n\nShipped iOS apps in Swift and Android in Kotlin. Worked with REST backends and Firebase. App Store releases and crash analytics."
+    },
+    {
+      "id": 8,
+      "ground_truth_relevant": true,
+      "job_description": "Junior Python Developer: basic Python, Git, APIs, willingness to learn Django or Flask.",
+      "resume_text": "Riley Nguyen — CS Student\n\nCoursework in data structures and algorithms. Personal projects in Python including a small Flask todo API on GitHub. Comfortable with Git and REST basics."
+    },
+    {
+      "id": 9,
+      "ground_truth_relevant": false,
+      "job_description": "Mechanical Engineer: CAD (SolidWorks), thermodynamics, HVAC design, commissioning.",
+      "resume_text": "Priya Singh — UX Designer\n\nUser research, Figma prototypes, usability testing, design systems for SaaS products. Collaborated with PMs and engineers."
+    },
+    {
+      "id": 10,
+      "ground_truth_relevant": true,
+      "job_description": "Frontend Engineer: React, TypeScript, CSS, accessibility, performance tuning, REST integration.",
+      "resume_text": "Morgan Blake — Frontend Engineer\n\nDeveloped React applications with TypeScript. Styled with CSS modules; improved Lighthouse scores. Consumed REST APIs and worked with design teams."
+    }
+  ]
+}

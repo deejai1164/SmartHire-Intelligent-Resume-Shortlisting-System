@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Batch Screening · Resume Screening Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .file-list {
+            margin-top: 16px;
+            padding: 16px;
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.92));
+            border: 1px solid rgba(75, 85, 99, 0.9);
+            border-radius: 8px;
+            min-height: 60px;
+        }
+        .file-item {
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #e5e7eb;
+        }
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+        .file-item:hover {
+            background: rgba(15, 23, 42, 1);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+        .remove-file {
+            color: #f87171;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .remove-file:hover {
+            background: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-kicker">HR Batch Screening</div>
+            <div class="app-title-row">
+                <div class="logo-pill">R</div>
+                <div class="app-title-block">
+                    <h1>Batch Resume Screening</h1>
+                    <p>Upload multiple resumes and get a comprehensive report with scores, rankings, and contact information.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Screen multiple candidates</div>
+                        <div class="panel-subtitle">Upload multiple resumes at once and compare them against your job requirements.</div>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-dot"></span>
+                        Batch processing
+                    </div>
+                </div>
+
+                <form action="/hr/analyze" method="post" enctype="multipart/form-data" id="hrForm">
+                    <div class="form-grid">
+                        <div class="field">
+                            <div class="field-label-row">
+                                <label for="resumes">Resume Files</label>
+                                <span class="field-hint">Select multiple PDF or DOCX files · Max 10 MB each</span>
+                            </div>
+                            <input type="file" id="resumes" name="resumes" accept=".pdf,.docx" multiple required>
+                            <div class="file-list" id="fileList" style="display: none;">
+                                <div id="fileListContent"></div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label-row">
+                                <label for="job_description">Job Description</label>
+                                <span class="field-hint">Describe the role, required skills, and qualifications</span>
+                            </div>
+                            <textarea id="job_description" name="job_description" placeholder="Senior ML Engineer role focusing on Python, NLP, model deployment, cloud infrastructure, etc. Minimum 3 years experience required." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="primary-actions">
+                        <button type="submit" class="submit-button">
+                            <span>Analyze all resumes</span>
+                            <span>➜</span>
+                        </button>
+                        <p class="legal-text">
+                            <strong>Batch processing.</strong> All resumes will be analyzed and ranked by match score. Contact information will be extracted automatically.
+                        </p>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="panel side-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">What you'll get</div>
+                        <div class="panel-subtitle">Comprehensive batch analysis report.</div>
+                    </div>
+                </div>
+
+                <div class="insight-metric">
+                    <span class="insight-metric-label">Report includes</span>
+                    <span class="insight-metric-value">All candidates</span>
+                </div>
+
+                <div class="pill-row">
+                    <span class="pill pill--accent">Sorted by score</span>
+                    <span class="pill">Contact info</span>
+                    <span class="pill">Email & phone</span>
+                    <span class="pill">Skills analysis</span>
+                </div>
+
+                <div class="quote-card">
+                    <header>
+                        <div class="quote-badge">Batch features</div>
+                        <div class="quote-meta">Designed for HR teams</div>
+                    </header>
+                    <p>
+                        <strong>Efficient screening:</strong> Process dozens of resumes in one go. Get ranked results, 
+                        contact information, and detailed skill matching—all organized for quick decision-making.
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="footer-strip">
+            <a href="{{ url_for('dashboard') }}">⟵ Back to dashboard</a>
+            <span>Batch processing powered by semantic matching and AI.</span>
+        </footer>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('resumes');
+        const fileList = document.getElementById('fileList');
+        const fileListContent = document.getElementById('fileListContent');
+        const files = [];
+
+        fileInput.addEventListener('change', function(e) {
+            files.length = 0;
+            Array.from(e.target.files).forEach(file => {
+                files.push(file);
+            });
+            updateFileList();
+        });
+
+        function updateFileList() {
+            if (files.length === 0) {
+                fileList.style.display = 'none';
+                return;
+            }
+
+            fileList.style.display = 'block';
+            fileListContent.innerHTML = files.map((file, index) => `
+                <div class="file-item">
+                    <span>${file.name}</span>
+                    <span class="remove-file" onclick="removeFile(${index})">✕</span>
+                </div>
+            `).join('');
+        }
+
+        function removeFile(index) {
+            files.splice(index, 1);
+            const dt = new DataTransfer();
+            files.forEach(file => dt.items.add(file));
+            fileInput.files = dt.files;
+            updateFileList();
+        }
+    </script>
+</body>
+</html>

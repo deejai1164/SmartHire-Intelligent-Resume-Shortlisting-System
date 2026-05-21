@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening · Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-kicker">Screening result</div>
+            <div class="app-title-row">
+                <div class="logo-pill">R</div>
+                <div class="app-title-block">
+                    <h1>Candidate fit summary</h1>
+                    <p>At-a-glance view of how this resume aligns with the role you described.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Match score &amp; decision</div>
+                        <div class="panel-subtitle">Use this as a guide, not a final verdict. Your judgment still matters most.</div>
+                    </div>
+                </div>
+
+                <div class="insight-metric">
+                    <span class="insight-metric-label">Overall match score</span>
+                    <span class="insight-metric-value">{{ percentage|round(1) }}%</span>
+                </div>
+                <div class="insight-meter-track">
+                    <div class="insight-meter-fill" style="width: {{ percentage }}%;"></div>
+                    <div class="insight-meter-overlay"></div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    {% if percentage >= 70 %}
+                        <div class="status-chip status-chip--success">
+                            <span class="status-dot status-dot--success"></span>
+                            Strong alignment · Recommended to shortlist
+                        </div>
+                        <p class="result-tagline">This candidate appears to match most of the skills you requested. Worth moving forward in your pipeline.</p>
+                    {% else %}
+                        <div class="status-chip status-chip--danger">
+                            <span class="status-dot status-dot--danger"></span>
+                            Limited alignment · Review with caution
+                        </div>
+                        <p class="result-tagline">The match is below the usual shortlist threshold. You may still proceed if other signals are strong.</p>
+                    {% endif %}
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Matching skills</div>
+                        <div class="metric-value">
+                            {% if skills %}
+                                {{ skills|length }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </div>
+                        <div class="metric-pill">Direct or synonym hits</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Status</div>
+                        <div class="metric-value">
+                            {% if percentage >= 70 %}Shortlisted{% else %}Not shortlisted{% endif %}
+                        </div>
+                        <div class="metric-pill">Threshold at 70%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Model signals</div>
+                        <div class="metric-value">Semantic + Keywords</div>
+                        <div class="metric-pill">Sentence-Transformers · Gemini · spaCy</div>
+                    </div>
+                </div>
+
+                {% if semantic_score is defined and semantic_score > 0 %}
+                <div style="margin-top: 24px;">
+                    <div class="panel-header" style="padding-left: 0; padding-right: 0;">
+                        <div>
+                            <div class="panel-title">Score breakdown</div>
+                            <div class="panel-subtitle">Detailed scoring components</div>
+                        </div>
+                    </div>
+                    <div class="metric-grid" style="margin-top: 16px;">
+                        <div class="metric-card">
+                            <div class="metric-label">Semantic match</div>
+                            <div class="metric-value">{{ semantic_score|round(1) }}%</div>
+                            <div class="metric-pill">Embedding similarity</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Keyword match</div>
+                            <div class="metric-value">{{ keyword_score|round(1) }}%</div>
+                            <div class="metric-pill">Skill overlap</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Combined</div>
+                            <div class="metric-value">{{ percentage|round(1) }}%</div>
+                            <div class="metric-pill">Weighted average</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div style="margin-top: 32px;">
+                    <div class="panel-header" style="padding-left: 0; padding-right: 0;">
+                        <div>
+                            <div class="panel-title">AI-written feedback</div>
+                            <div class="panel-subtitle">A short narrative summary of how this resume aligns with your role.</div>
+                        </div>
+                    </div>
+                    <div class="quote-card">
+                        {% if feedback %}
+                            <p>{{ feedback }}</p>
+                        {% else %}
+                            <p>
+                                Detailed feedback is unavailable for this run. You can still use the score
+                                and skill lists as a quick screening aid.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <aside class="panel side-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Matched skill set</div>
+                        <div class="panel-subtitle">Here’s what the system detected as overlapping with your job requirements.</div>
+                    </div>
+                </div>
+
+                <div class="pill-row">
+                    {% if skills and skills|length > 0 %}
+                        {% for skill in skills %}
+                            <span class="pill pill--accent">{{ skill }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="pill">No clear overlaps detected. Try adding more specific skills in the job description.</span>
+                    {% endif %}
+                </div>
+
+                <div class="panel-header" style="margin-top: 24px;">
+                    <div>
+                        <div class="panel-title">Missing or weak skills</div>
+                        <div class="panel-subtitle">Keywords from your role that did not clearly appear in the resume.</div>
+                    </div>
+                </div>
+                <div class="pill-row">
+                    {% if missing_skills and missing_skills|length > 0 %}
+                        {% for m in missing_skills %}
+                            <span class="pill">{{ m }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="pill pill--accent">No obvious gaps detected for the provided keywords.</span>
+                    {% endif %}
+                </div>
+
+                <div class="quote-card">
+                    <header>
+                        <div class="quote-badge">Next steps</div>
+                        <div class="quote-meta">Use alongside your usual hiring workflow</div>
+                    </header>
+                    <p>
+                        <strong>Tip:</strong> Re-run this screen with different role profiles to see how the same resume performs across adjacent positions
+                        (e.g. Data Scientist vs. ML Engineer).
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="footer-strip">
+            <a href="{{ url_for('individual_upload') }}">⟵ Screen another resume</a>
+            <a href="{{ url_for('dashboard') }}" style="margin-left: 16px;">🏠 Dashboard</a>
+            <span>Scores combine semantic embeddings (sentence-transformers) with keyword matching (Gemini + spaCy).</span>
+        </footer>
+    </div>
+</body>
+</html>
